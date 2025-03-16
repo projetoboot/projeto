@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard</title>
+    <script>
+        // Função para atualizar o QR Code a cada intervalo
+        function atualizarQRCode() {
+            const qrCodeImg = document.getElementById("qrCodeImg");
+            const timestamp = new Date().getTime(); // Garantir que o navegador não use a imagem em cache
+            qrCodeImg.src = "/qrcode.png?timestamp=" + timestamp;
+        }
+
+        // Atualiza o QR Code a cada 10 segundos
+        setInterval(atualizarQRCode, 10000);
+    </script>
+    <!-- Framework7 CSS -->
+    <link rel="stylesheet" href="/css/framework7.bundle.min.css">
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+        }
+    </style>
+</head>
+<body>
+    <div id="app">
+        <div class="page">
+            <div class="navbar">
+                <div class="navbar-inner sliding">
+                    <div class="title">Dashboard</div>
+                </div>
+            </div>
+            <div class="page-content">
+            <h2>Escaneie o QR Code para conectar ao WhatsApp</h2>
+              <img id="qrCodeImg" src="<%= qrCode %>" alt="QR Code" />
+           
+                <div class="block">
+                    <p>Bem-vindo ao Dashboard!</p>
+                </div>
+                <div class="list">
+                    <ul>
+                        <li>
+                            <a href="/dashboard/cardapio" class="item-link item-content external">
+                                <div class="item-inner">
+                                    <div class="item-title">Gerenciar Cardápio</div>
+                                </div>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="/dashboard/pedidos" class="item-link item-content external">
+                                <div class="item-inner">
+                                    <div class="item-title">Visualizar Pedidos</div>
+                                </div>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="/dashboard/logs" class="item-link item-content external">
+                                <div class="item-inner">
+                                    <div class="item-title">Visualizar Logs</div>
+                                </div>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Framework7 JS -->
+    <script src="/js/framework7.bundle.min.js"></script>
+    <script>
+        var app = new Framework7({
+            root: '#app',
+            name: 'My App',
+            theme: 'ios',
+        });
+    </script>
+</body>
+</html>

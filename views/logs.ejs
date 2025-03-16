@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Logs</title>
+    <link rel="stylesheet" href="/css/framework7.bundle.min.css">
+</head>
+<body>
+    <h1>Logs</h1>
+    <table border="1">
+        <tr>
+            <th>ID</th>
+            <th>Usuário</th>
+            <th>Mensagem</th>
+            <th>Data/Hora</th>
+        </tr>
+        <% logs.forEach(log => { %>
+        <tr>
+            <td><%= log.id %></td>
+            <td><%= log.usuario %></td>
+            <td><%= log.mensagem %></td>
+            <td><%= log.data_hora %></td>
+        </tr>
+        <% }) %>
+    </table>
+    <script src="/js/framework7.bundle.min.js"></script>
+    <script>
+        // Inicialização do Framework7
+        var app = new Framework7({
+            root: '#app',
+            name: 'My App',
+            theme: 'ios', // Define o tema como iOS
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gerenciar Cardápio</title>
+    <!-- Framework7 CSS -->
+    <link rel="stylesheet" href="/css/framework7.bundle.min.css">
+</head>
+<body>
+    <!-- Estrutura principal do Framework7 -->
+    <div id="app">
+        <!-- Página Gerenciar Cardápio -->
+        <div class="page" data-name="gerenciar-cardapio">
+            <!-- Navbar -->
+            <div class="navbar">
+                <div class="navbar-inner sliding">
+                    <div class="left">
+                        <a href="/" class="link back  item-content external">
+                            <i class="icon icon-back"></i>
+                            <span>Voltar</span>
+                        </a>
+                    </div>
+                    <div class="title">Gerenciar Cardápio</div>
+                </div>
+            </div>
+
+            <!-- Conteúdo da Página -->
+            <div class="page-content">
+                <!-- Formulário para Adicionar Item -->
+                <div class="block">
+                    <h2>Adicionar Item</h2>
+                    <form method="POST" action="/dashboard/cardapio/adicionar" class="list">
+                        <ul>
+                            <li class="item-content item-input">
+                                <div class="item-inner">
+                                    <div class="item-title item-label">Nome:</div>
+                                    <div class="item-input-wrap">
+                                        <input type="text" name="nome" required>
+                                    </div>
+                                </div>
+                            </li>
+                            <li class="item-content item-input">
+                                <div class="item-inner">
+                                    <div class="item-title item-label">Categoria:</div>
+                                    <div class="item-input-wrap">
+                                        <input type="text" name="categoria" required>
+                                    </div>
+                                </div>
+                            </li>
+                            <li class="item-content item-input">
+                                <div class="item-inner">
+                                    <div class="item-title item-label">Preço:</div>
+                                    <div class="item-input-wrap">
+                                        <input type="number" step="0.01" name="preco" required>
+                                    </div>
+                                </div>
+                            </li>
+                            <li class="item-content item-input">
+                                <div class="item-inner">
+                                    <div class="item-title item-label">Imagem (URL):</div>
+                                    <div class="item-input-wrap">
+                                        <input type="url" name="imagem">
+                                    </div>
+                                </div>
+                            </li>
+                            <li class="item-content item-input">
+                                <div class="item-inner">
+                                    <div class="item-title item-label">Sinônimos (separados por vírgula):</div>
+                                    <div class="item-input-wrap">
+                                        <input type="text" name="synonyms">
+                                    </div>
+                                </div>
+                            </li>
+                        </ul>
+                        <button type="submit" class="button button-fill button-large">Adicionar</button>
+                    </form>
+                </div>
+
+                <!-- Lista de Itens do Cardápio -->
+                <div class="block">
+                    <h2>Itens do Cardápio</h2>
+                    <div class="list">
+                        <% if (cardapio && cardapio.length > 0) { %>
+                            <ul>
+                                <% cardapio.forEach(item => { %>
+                                    <li class="item-content">
+                                        <div class="item-inner">
+                                            <div class="item-title"><%= item.nome %> (R$ <%= parseFloat(item.preco).toFixed(2) %>)</div>
+                                            <div class="item-after">
+                                                <img src="<%= item.imagem %>" alt="Imagem do item" width="50">
+                                                <a href="/dashboard/cardapio/remover/<%= item.id %>" class="button button-fill button-small color-red external ">Remover</a>
+                                            </div>
+                                        </div>
+                                    </li>
+                                <% }); %>
+                            </ul>
+                        <% } else { %>
+                            <div class="block">
+                                <p>Nenhum item no cardápio.</p>
+                            </div>
+                        <% } %>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Framework7 JS -->
+    <script src="/js/framework7.bundle.min.js"></script>
+    <script>
+        // Inicialização do Framework7
+        var app = new Framework7({
+            root: '#app',
+            name: 'My App',
+            theme: 'ios', // Define o tema como iOS
+        });
+    </script>
+</body>
+</html>

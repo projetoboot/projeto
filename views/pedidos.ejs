@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pedidos</title>
+    <!-- Framework7 CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/framework7@latest/css/framework7.bundle.min.css">
+</head>
+<body>
+    <!-- Estrutura principal do Framework7 -->
+    <div id="app">
+        <!-- Página Pedidos -->
+        <div class="page" data-name="pedidos">
+            <!-- Navbar -->
+            <div class="navbar">
+                <div class="navbar-inner sliding">
+                    <div class="left">
+                        <a href="/" class="link back external">
+                            <i class="icon icon-back"></i>
+                            <span>Voltar</span>
+                        </a>
+                    </div>
+                    <div class="title">Pedidos</div>
+                </div>
+            </div>
+
+            <!-- Conteúdo da Página -->
+            <div class="page-content">
+                <div class="block">
+                    <h2>Pedidos</h2>
+                </div>
+
+                <!-- Lista de Pedidos -->
+                <div class="list">
+                    <% if (pedidos && pedidos.length > 0) { %>
+                        <ul>
+                            <% pedidos.forEach(pedido => { %>
+                                <li class="item-content">
+                                    <div class="item-inner">
+                                        <div class="item-title-row">
+                                            <div class="item-title">Pedido #<%= pedido.id %></div>
+                                            <div class="item-after">R$ <%= parseFloat(pedido.total).toFixed(2) %></div>
+                                        </div>
+                                        <div class="item-subtitle"><%= pedido.usuario %></div>
+                                        <div class="item-text">
+                                            <p><strong>Itens:</strong> <%= pedido.itens %></p>
+                                            <p><strong>Endereço:</strong> <%= pedido.endereco %></p>
+                                            <p><strong>Data/Hora:</strong> <%= pedido.data_hora %></p>
+                                        </div>
+                                    </div>
+                                </li>
+                            <% }); %>
+                        </ul>
+                    <% } else { %>
+                        <div class="block">
+                            <p>Nenhum pedido encontrado.</p>
+                        </div>
+                    <% } %>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Framework7 JS -->
+    <script src="https://cdn.jsdelivr.net/npm/framework7@latest/js/framework7.bundle.min.js"></script>
+    <script>
+        // Inicialização do Framework7
+        var app = new Framework7({
+            root: '#app',
+            name: 'My App',
+            theme: 'ios', // Define o tema como iOS
+            routes: [
+                {
+                    path: '/',
+                    url: '/',
+                },
+                {
+                    path: '/dashboard/pedidos',
+                    url: '/dashboard/pedidos',
+                },
+            ],
+        });
+    </script>
+</body>
+</html>

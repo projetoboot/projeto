@@ -1,0 +1,10 @@
+<<<<<<< HEAD
+src/cardapio.py
+=======
+node_modules/
+.wwebjs_auth/
+driver/
+.env
+*.log
+.DS_Store
+>>>>>>> cb5eb8b (primeiro comit)
