@@ -1,0 +1,161 @@
+
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - Lanchonete Bot</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+        }
+
+        body {
+           
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+        }
+
+        
+            .login-container {
+    background: white;
+    border-radius: 7%;
+    box-shadow: 0 9px 19px rgb(0 0 0 / 35%);
+    width: 100%;
+    max-width: 400px;
+    padding: 40px 30px;
+    text-align: center;
+        }
+
+        .login-logo {
+            width: 100px;
+            height: 100px;
+            background: #ea1d2c;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: 0 auto 30px;
+            color: white;
+            font-size: 48px;
+        }
+
+        .login-title {
+            color: #333;
+            margin-bottom: 30px;
+            font-size: 24px;
+            font-weight: 600;
+        }
+
+        .input-container {
+            position: relative;
+            margin-bottom: 20px;
+        }
+
+        .input-container i {
+            position: absolute;
+            left: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #888;
+        }
+
+        .login-input {
+            width: 100%;
+            padding: 15px 15px 15px 45px;
+            border: 1px solid #ddd;
+            border-radius: 10px;
+            font-size: 16px;
+            transition: all 0.3s ease;
+        }
+
+        .login-input:focus {
+            outline: none;
+            border-color: #4CAF50;
+            box-shadow: 0 0 0 2px rgba(76, 175, 80, 0.2);
+        }
+
+        .login-btn {
+            width: 100%;
+            padding: 15px;
+            background-color: #ea1d2c;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 18px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .login-btn:hover {
+            background-color: #ea1d2c;
+        }
+
+        .login-footer {
+            margin-top: 20px;
+            color: #666;
+            font-size: 14px;
+        }
+
+        .error-message {
+            color: #f44336;
+            margin-bottom: 15px;
+            font-size: 14px;
+        }
+    </style>
+</head>
+<body>
+    <div class="login-container">
+        <div class="login-logo">
+            <i class="fas fa-utensils"></i>
+        </div>
+        <h2 class="login-title">Lanchonete Bot</h2>
+        
+    <form action="/salvar-telefone" method="POST">
+          
+            <div class="input-container">
+                <i class="fas fa-user"></i>
+                <input type="text" id="telefone"  required  class="login-input"  name="telefone" maxlength="15" required placeholder="(XX) XXXXX-XXXX" />
+
+                
+            </div>
+
+            <div class="input-container">
+               
+            </div>
+             <button type="submit"class="login-btn"> Entrar </button>
+            
+        </form>
+
+        <div class="login-footer">
+          <a href="/cadastro"> Digite seu numero de whataap </a>
+        </div>
+    </div>
+</body>
+</html>
+<script>
+    // Função para aplicar a máscara de telefone
+    function aplicarMascaraTelefone(event) {
+        let telefone = event.target.value.replace(/\D/g, ''); // Remove caracteres não numéricos
+        if (telefone.length <= 2) {
+            telefone = telefone.replace(/^(\d{2})/, '($1)');
+        } else if (telefone.length <= 6) {
+            telefone = telefone.replace(/^(\d{2})(\d{5})/, '($1) $2');
+        } else {
+            telefone = telefone.replace(/^(\d{2})(\d{5})(\d{4})/, '($1) $2-$3');
+        }
+        event.target.value = telefone;
+    }
+
+    // Adicionar o evento para aplicar a máscara no campo de telefone
+    document.getElementById('telefone').addEventListener('input', aplicarMascaraTelefone);
+</script>

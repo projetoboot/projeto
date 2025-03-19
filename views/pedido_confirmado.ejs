@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pedido Confirmado - Lanchonete Bot</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="/css/cardapio.css">
+    <style>
+        .pedido-confirmado {
+            max-width: 600px;
+            margin: 20px auto;
+            padding: 20px;
+            background: #fff;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .pedido-header {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .pedido-header i {
+            color: #4CAF50;
+            font-size: 48px;
+            margin-bottom: 10px;
+        }
+
+        .pedido-items {
+            margin-bottom: 20px;
+        }
+
+        .pedido-item {
+            padding: 10px 0;
+            border-bottom: 1px solid #eee;
+        }
+
+        .pedido-item:last-child {
+            border-bottom: none;
+        }
+
+        .pedido-total {
+            font-size: 1.2em;
+            font-weight: bold;
+            text-align: right;
+            padding: 10px 0;
+            border-top: 2px solid #eee;
+        }
+
+        .pedido-entrega {
+            background: #f9f9f9;
+            padding: 15px;
+            border-radius: 5px;
+            margin: 10px 0;
+        }
+
+        .voltar-btn {
+            display: block;
+            text-align: center;
+            margin-top: 20px;
+            padding: 10px;
+            background: #4CAF50;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <div class="header">
+        <div class="header-content">
+            <h1>Lanchonete Bot</h1>
+        </div>
+    </div>
+
+    <!-- Container Principal -->
+    <div class="container">
+        <div class="pedido-confirmado">
+            <div class="pedido-header">
+                <i class="fas fa-check-circle"></i>
+                <h2>Pedido Confirmado!</h2>
+                <p>Seu pedido foi recebido com sucesso.</p>
+                <p>enviado por <%= telefone %></p>
+            </div>
+
+            <div class="pedido-items">
+                <h3>Itens do Pedido</h3>
+                <% carrinho.items.forEach(item => { %>
+                    <div class="pedido-item">
+                        <h4><%= item.produto.nome %></h4>
+                        <p>Quantidade: <%= item.quantidade %></p>
+                        <% if (item.opcionaisSelecionados && item.opcionaisSelecionados.length > 0) { %>
+                            <small>
+                                Opcionais: <%= item.opcionaisSelecionados.map(op => op.nome).join(', ') %>
+                            </small>
+                        <% } %>
+                        <div class="pedido-item-preco">
+                            R$ <%= (item.produto.preco * item.quantidade).toFixed(2) %>
+                        </div>
+                    </div>
+                <% }); %>
+            </div>
+
+            <div class="pedido-entrega">
+                <h3>Detalhes da Entrega</h3>
+                <p><strong>Tipo de Entrega:</strong> <%= tipoEntrega %></p>
+                <% if (tipoEntrega === 'entrega' && enderecoEntrega) { %>
+                    <p><strong>Endereço:</strong> <%= enderecoEntrega %></p>
+                <% } %>
+            </div>
+
+            <div class="pedido-total">
+                Total: R$ <%= total.toFixed(2) %>
+            </div>
+
+            <a href="/cardapio_digital" class="voltar-btn">Voltar ao Cardápio</a>
+        </div>
+    </div>
+
+    <script>
+        // Limpar o carrinho do localStorage após confirmar o pedido
+        localStorage.removeItem('carrinho');
+    </script>
+</body>
+</html>

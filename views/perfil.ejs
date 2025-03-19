@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cardápio Digital - Lanchonete Bot</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="/css/cardapio.css">
+</head>
+<body>
+    <!-- Header -->
+   <div class="header">
+    <div class="header-content">
+        <h1>Lanchonete Bot</h1>
+        
+    </div>
+</div>
+
+    <!-- Barra de Busca -->
+    <div class="search-bar">
+        <i class="fas fa-search"></i>
+        <input type="text" placeholder="Buscar pratos e restaurantes" id="searchInput">
+       
+    </div>
+
+   
+
+    <!-- Container Principal -->
+    <div class="container">
+        <div id="pedidos">
+            <h2>Seus Pedidos</h2>
+            <% if (typeof pedidos === 'string') { %>
+                <p><%= pedidos %></p>
+            <% } else { %>
+                <% if (pedidos && pedidos.length > 0) { %>
+                    <% pedidos.forEach(pedido => { %>
+                        <div class="pedido">
+                            <h4>Pedido </h4>
+                            <div class="info-pedido">
+                                <p><i class="fas fa-calendar-alt"></i> <%= pedido.data_pedido.toLocaleDateString() %></p>
+                                <p><i class="fas fa-truck"></i> <%= pedido.tipo_entrega %></p>
+                                <p><i class="fas fa-dollar-sign"></i> Total: R$ <%= pedido.total.toFixed(2) %></p>
+                            </div>
+                            <button class="btn-detalhes" onclick="toggleDetalhes('<%= pedido.id %>')">Ver Detalhes</button>
+                            <div id="detalhes-<%= pedido.id %>" class="detalhes-pedido" style="display: none;">
+                                <ul>
+                                    <% pedido.itens.forEach(item => { %>
+                                        <p>
+                                            <img src="/images/<%= item.imagem || 'default.jpg' %>" alt="<%= item.nome %>" class="item-imagem">
+                                            <%- item.nome %> - <%- item.quantidade %>x - R$ <%- Number(item.preco_unitario).toFixed(2) %>
+                                        </p>
+                                    <% }); %>
+                                </ul>
+                            </div>
+                            <style>
+                            .item-imagem {
+                                width: 30px;
+                                height: 30px;
+                                border-radius: 50%;
+                                margin-right: 10px;
+                                vertical-align: middle;
+                            }
+                            </style>
+                        </div>
+                    <% }) %>
+                <% } else { %>
+                    <p>Nenhum pedido encontrado.</p>
+                <% } %>
+            <% } %>
+        </div>
+    </div>
+
+    <style>
+    .pedido {
+        border: 1px solid #ddd;
+        padding: 15px;
+        margin-bottom: 15px;
+        border-radius: 8px;
+        background-color: #f9f9f9;
+    }
+    .info-pedido {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+        margin-bottom: 10px;
+    }
+    .info-pedido p {
+        margin: 0;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+    .btn-detalhes {
+        background-color: #ea1d2c;
+        color: white;
+        border: none;
+        padding: 8px 12px;
+        border-radius: 4px;
+        cursor: pointer;
+    }
+    .btn-detalhes:hover {
+        background-color: #440745;
+    }
+    .detalhes-pedido {
+        margin-top: 10px;
+        padding: 10px;
+         }
+    .detalhes-pedido  ,li{
+        margin-top: 10px;
+        padding: 10px;
+        background-color: #fff;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Small subtle shadow */
+    }
+    </style>
+
+    
+
+    
+
+    <!-- Navegação Inferior -->
+    <nav class="nav-bottom">
+        <a href="/" class="nav-item active">
+            <i class="fas fa-home"></i>
+            <span>Home</span>
+        </a>
+       
+        <a href="/pedidos" class="nav-item">
+            <i class="fas fa-file-alt"></i>
+            <span>Pedidos</span>
+        </a>
+    
+    </nav>
+   
+    <!-- Scripts -->
+    <script src="/js/cardapio_digital.js"></script>
+    <script src="/js/carrinho_modal.js"></script>
+    <script>
+        function toggleDetalhes(pedidoId) {
+            const detalhes = document.getElementById('detalhes-' + pedidoId);
+            if (detalhes.style.display === 'none') {
+                detalhes.style.display = 'block';
+            } else {
+                detalhes.style.display = 'none';
+            }
+        }
+    </script>
+</body>
+</html>

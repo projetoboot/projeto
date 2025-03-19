@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cardápio Digital - Lanchonete Bot</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="/css/cardapio.css">
+</head>
+<body>
+    <!-- Header -->
+   <div class="header">
+    <div class="header-content">
+        <h1>Lanchonete Bot</h1>
+        <div class="carrinho-header">
+            <% if (carrinho && carrinho.length > 0) { %>
+                <div class="carrinho-info">
+                    <span class="carrinho-quantidade"><%= carrinho.length %></span>
+                    <span class="carrinho-total">
+                        R$ <%= carrinho.reduce((total, item) => total + (item.preco * item.quantidade), 0).toFixed(2) %>
+                    </span>
+                </div>
+            <% } else { %>
+                <div class="carrinho-vazio">
+                    <span>Carrinho vazio</span>
+                </div>
+            <% } %>
+        </div>
+    </div>
+</div>
+
+    <!-- Barra de Busca -->
+    <div class="search-bar">
+        <i class="fas fa-search"></i>
+        <input type="text" placeholder="Buscar pratos e restaurantes" id="searchInput">
+       
+    </div>
+
+    <!-- Navegação de Categorias -->
+    <nav class="categorias-nav">
+        <div class="categorias-lista">
+            <button class="categoria-btn ativo" data-categoria="todos">
+                <div class="categoria-icon">
+                    <i class="fas fa-utensils"></i>
+                </div>
+                <span>Todos</span>
+            </button>
+            <% 
+            const categorias = [...new Set(cardapio.map(item => item.categoria))];
+            categorias.forEach(categoria => { 
+                let icone = '';
+                switch(categoria) {
+                    case 'Lanches':
+                        icone = 'fas fa-burger';
+                        break;
+                    case 'Pizzas':
+                        icone = 'fas fa-pizza-slice';
+                        break;
+                    case 'Bebidas':
+                        icone = 'fas fa-martini-glass';
+                        break;
+                    case 'Sobremesas':
+                        icone = 'fas fa-ice-cream';
+                        break;
+                    case 'Acompanhamentos':
+                        icone = 'fas fa-bowl-food';
+                        break;
+                    case 'Oriental':
+                        icone = 'fas fa-bowl-rice';
+                        break;
+                    default:
+                        icone = 'fas fa-utensils';
+                }
+            %>
+                <button class="categoria-btn" data-categoria="<%= categoria %>">
+                    <div class="categoria-icon">
+                        <i class="<%= icone %>"></i>
+                    </div>
+                    <span><%= categoria %></span>
+                </button>
+            <% }); %>
+        </div>
+    </nav>
+
+    <!-- Container Principal -->
+    <div class="container">
+        <div class="produtos-grid">
+            <% cardapio.forEach(produto => { %>
+                <div class="produto-card" 
+                     data-id="<%= produto.id %>"
+                     data-nome="<%= produto.nome %>"
+                     data-preco="<%= produto.preco %>"
+                     data-categoria="<%= produto.categoria %>"
+                     data-imagem="<%= produto.imagem %>"
+                     data-opcionais='<%= JSON.stringify(produto.opcionais) %>'>
+                    <img src="/images/<%= produto.imagem %>" alt="<%= produto.nome %>" class="produto-imagem">
+                    <div class="produto-info">
+                        <h3 class="produto-nome"><%= produto.nome %></h3>
+                        <p class="produto-preco">R$ <%= typeof produto.preco === 'number' ? produto.preco.toFixed(2) : '0.00' %></p>
+                    </div>
+                </div>
+            <% }); %>
+        </div>
+    </div>
+
+    <!-- Modal de Produto -->
+    <div class="modal" id="modalProduto">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title"></h3>
+                <button class="modal-close">&times;</button>
+            </div>
+            <div class="modal-imagem">
+                <img src="" alt="" class="modal-produto-img">
+            </div>
+            <div class="modal-body">
+                <div class="quantidade-controle">
+                    <button class="quantidade-btn diminuir">-</button>
+                    <input type="number" class="quantidade-input" value="1" min="1" max="10" readonly>
+                    <button class="quantidade-btn aumentar">+</button>
+                </div>
+
+                <div class="opcionais-container">
+                    <h4>Opcionais</h4>
+                    <div class="opcionais-lista"></div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <div class="total-preco">R$ 0,00</div>
+                <button class="adicionar-carrinho-btn">Adicionar ao Carrinho</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal do Carrinho -->
+    <div class="modal" id="modalCarrinho">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">Seu Carrinho</h3>
+                <button class="modal-close">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="carrinho-lista">
+                <% if (carrinho && carrinho.length > 0) { %>
+                    <% carrinho.forEach((item, index) => { %>
+                        <div class="carrinho-item">
+                            <div class="carrinho-item-info">
+                                <h4><%= item.nome %></h4>
+                                <p>Quantidade: <%= item.quantidade %></p>
+                                <% if (item.opcionais && item.opcionais.length > 0) { %>
+                                    <small>
+                                        Opcionais: <%= item.opcionais.map(op => op.nome).join(', ') %>
+                                    </small>
+                                <% } %>
+                            </div>
+                            <div class="carrinho-item-acoes">
+                                <div class="carrinho-item-preco">
+                                    R$ <%= (item.preco * item.quantidade).toFixed(2) %>
+                                </div>
+                                <button class="remover-item" data-index="<%= index %>">
+                                    <i class="fas fa-trash"></i>
+                                </button>
+                            </div>
+                        </div>
+                    <% }); %>
+                <% } %>
+            </div>
+                <div class="carrinho-vazio" style="display: none;">
+                    <i class="fas fa-shopping-cart"></i>
+                    <p>Seu carrinho está vazio</p>
+                </div>
+
+                <div class="tipo-entrega-container">
+                    <h4>Como você quer receber seu pedido?</h4>
+                    <div class="opcoes-entrega">
+                        <label class="opcao-entrega">
+                            <input type="radio" name="tipo-entrega" value="local" checked>
+                            <div class="opcao-conteudo">
+                                <i class="fas fa-utensils"></i>
+                                <span>Consumir na Loja</span>
+                            </div>
+                        </label>
+                        <label class="opcao-entrega">
+                            <input type="radio" name="tipo-entrega" value="retirada">
+                            <div class="opcao-conteudo">
+                                <i class="fas fa-shopping-bag"></i>
+                                <span>Retirar no Local</span>
+                            </div>
+                        </label>
+                        <label class="opcao-entrega">
+                            <input type="radio" name="tipo-entrega" value="entrega">
+                            <div class="opcao-conteudo">
+                                <i class="fas fa-motorcycle"></i>
+                                <span>Delivery</span>
+                            </div>
+                        </label>
+                    </div>
+                    <div class="endereco-entrega" style="display: none;">
+                        <textarea 
+                            placeholder="Digite seu endereço completo para entrega&#10;Ex: Rua, número, bairro, complemento, ponto de referência"
+                            rows="3"
+                        ></textarea>
+                    </div>
+                </div>
+                <div class="carrinho-total-modal">Total: R$ 0,00</div>
+                <div class="botoes-carrinho">
+                    <button class="continuar-comprando-btn">Continuar Comprando</button>
+                    <button class="finalizar-pedido-btn">Finalizar Pedido</button>
+                </div>
+            </div>
+          <!--   <div class="modal-footer">
+                <div class="carrinho-total-modal">Total: R$ 0,00</div>
+                <div class="botoes-carrinho">
+                    <button class="continuar-comprando-btn">Continuar Comprando</button>
+                    <button class="finalizar-pedido-btn">Finalizar Pedido</button>
+                </div>
+            </div> <!-- Este é um comentário em HTML -->
+        </div>
+    </div>
+
+    <!-- Carrinho Flutuante -->
+    <div class="carrinho-flutuante">
+        <i class="fas fa-shopping-cart"></i>
+        <span class="carrinho-quantidade">0</span>
+        <span class="carrinho-total">R$ 0,00</span>
+    </div>
+    <!-- Navegação Inferior -->
+    <nav class="nav-bottom">
+        <a href="/" class="nav-item active">
+            <i class="fas fa-home"></i>
+            <span>Home</span>
+        </a>
+   
+        <a href="/pedidos" class="nav-item">
+            <i class="fas fa-file-alt"></i>
+            <span>Pedidos</span>
+        </a>
+    
+        
+        <!-- Move the entire modalCarrinho here -->
+        <div class="modal" id="modalCarrinho">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3 class="modal-title">Seu Carrinho</h3>
+                    <button class="modal-close">×</button>
+                </div>
+                <div class="modal-body">
+                    <div class="carrinho-lista">
+                    <% if (carrinho && carrinho.length > 0) { %>
+                        <% carrinho.forEach((item, index) => { %>
+                            <div class="carrinho-item">
+                                <div class="carrinho-item-info">
+                                    <h4><%= item.nome %></h4>
+                                    <p>Quantidade: <%= item.quantidade %></p>
+                                    <% if (item.opcionais && item.opcionais.length > 0) { %>
+                                        <small>
+                                            Opcionais: <%= item.opcionais.map(op => op.nome).join(', ') %>
+                                        </small>
+                                    <% } %>
+                                </div>
+                                <div class="carrinho-item-acoes">
+                                    <div class="carrinho-item-preco">
+                                        R$ <%= (item.preco * item.quantidade).toFixed(2) %>
+                                    </div>
+                                    <button class="remover-item" data-index="<%= index %>">
+                                        <i class="fas fa-trash"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        <% }); %>
+                    <% } %>
+                    </div>
+                    <div class="carrinho-vazio" style="display: none;">
+                        <i class="fas fa-shopping-cart"></i>
+                        <p>Seu carrinho está vazio</p>
+                    </div>
+
+                    <div class="tipo-entrega-container">
+                        <h4>Como você quer receber seu pedido?</h4>
+                        <div class="opcoes-entrega">
+                            <label class="opcao-entrega">
+                                <input type="radio" name="tipo-entrega" value="local" checked>
+                                <div class="opcao-conteudo">
+                                    <i class="fas fa-utensils"></i>
+                                    <span>Consumir na Loja</span>
+                                </div>
+                            </label>
+                            <label class="opcao-entrega">
+                                <input type="radio" name="tipo-entrega" value="retirada">
+                                <div class="opcao-conteudo">
+                                    <i class="fas fa-shopping-bag"></i>
+                                    <span>Retirar no Local</span>
+                                </div>
+                            </label>
+                            <label class="opcao-entrega">
+                                <input type="radio" name="tipo-entrega" value="entrega">
+                                <div class="opcao-conteudo">
+                                    <i class="fas fa-motorcycle"></i>
+                                    <span>Delivery</span>
+                                </div>
+                            </label>
+                        </div>
+                        <div class="endereco-entrega" style="display: none;">
+                            <textarea 
+                                placeholder="Digite seu endereço completo para entrega
+    Ex: Rua, número, bairro, complemento, ponto de referência"
+                                rows="3"
+                            ></textarea>
+                        </div>
+                    </div>
+                    <div class="carrinho-total-modal">Total: R$ 0,00</div>
+                    <div class="botoes-carrinho">
+                        <button class="continuar-comprando-btn">Continuar Comprando</button>
+                        <button class="finalizar-pedido-btn">Finalizar Pedido</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+    <!-- Scripts -->
+    <script src="/js/cardapio_digital.js"></script>
+    <script src="/js/carrinho_modal.js"></script>
+   
+    </body>
+</html>

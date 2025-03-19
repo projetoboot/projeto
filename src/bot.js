@@ -218,5 +218,5 @@ function encontrarItem(cardapio, texto) {
 
 // Inicializa o servidor
 app.listen(PORT, () => {
-    console.log(`Servidor rodando na porta ${PORT}`);
+    console.log(`Servidor eu sou bot rodando na porta ${PORT}`);
 });

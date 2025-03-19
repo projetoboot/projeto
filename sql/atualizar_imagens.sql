@@ -1,0 +1,16 @@
+-- Atualizando imagens dos produtos com URLs de imagens reais
+UPDATE produtos SET imagem = 'cachorro-quente-completo.jpg' WHERE id = 1;
+UPDATE produtos SET imagem = 'hamburguer-artesanal.jpg' WHERE id = 2;
+UPDATE produtos SET imagem = 'pizza-margherita.jpg' WHERE id = 3;
+UPDATE produtos SET imagem = 'refrigerante-coca.jpg' WHERE id = 4;
+UPDATE produtos SET imagem = 'suco-laranja-natural.jpg' WHERE id = 5;
+UPDATE produtos SET imagem = 'yakisoba-tradicional.jpg' WHERE id = 6;
+UPDATE produtos SET imagem = 'x-burger-especial.jpg' WHERE id = 7;
+UPDATE produtos SET imagem = 'x-salada-completo.jpg' WHERE id = 8;
+UPDATE produtos SET imagem = 'pizza-calabresa.jpg' WHERE id = 9;
+UPDATE produtos SET imagem = 'pizza-quatro-queijos.jpg' WHERE id = 10;
+UPDATE produtos SET imagem = 'batata-frita-crocante.jpg' WHERE id = 11;
+UPDATE produtos SET imagem = 'milkshake-chocolate.jpg' WHERE id = 12;
+UPDATE produtos SET imagem = 'milkshake-morango.jpg' WHERE id = 13;
+UPDATE produtos SET imagem = 'agua-mineral.jpg' WHERE id = 14;
+UPDATE produtos SET imagem = 'combo-sushi.jpg' WHERE id = 15; 

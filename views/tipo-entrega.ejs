@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tipo de Entrega - Lanchonete Bot</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="/css/cardapio.css">
+</head>
+<body>
+    <!-- Header -->
+    <div class="header">
+        <div class="header-content">
+            <a href="javascript:history.back()" class="voltar-btn">
+                <i class="fas fa-arrow-left"></i>
+            </a>
+            <h1>Tipo de Entrega</h1>
+        </div>
+    </div>
+
+    <!-- Container Principal -->
+    <div class="container">
+        <div class="tipo-entrega-container">
+            <h4>Como você quer receber seu pedido?</h4>
+            <div class="opcoes-entrega">
+                <label class="opcao-entrega">
+                    <input type="radio" name="tipo-entrega" value="local" checked>
+                    <div class="opcao-conteudo">
+                        <i class="fas fa-utensils"></i>
+                        <span>Consumir na Loja</span>
+                    </div>
+                </label>
+                <label class="opcao-entrega">
+                    <input type="radio" name="tipo-entrega" value="retirada">
+                    <div class="opcao-conteudo">
+                        <i class="fas fa-shopping-bag"></i>
+                        <span>Retirar no Local</span>
+                    </div>
+                </label>
+                <label class="opcao-entrega">
+                    <input type="radio" name="tipo-entrega" value="entrega">
+                    <div class="opcao-conteudo">
+                        <i class="fas fa-motorcycle"></i>
+                        <span>Delivery</span>
+                    </div>
+                </label>
+            </div>
+
+            <!-- Campo de endereço (visível apenas para delivery) -->
+            <div class="endereco-entrega" style="display: none;">
+                <textarea 
+                    placeholder="Digite seu endereço completo para entrega&#10;Ex: Rua, número, bairro, complemento, ponto de referência"
+                    rows="3"
+                ></textarea>
+            </div>
+
+            <!-- Resumo do Pedido -->
+            <div class="resumo-pedido">
+                <h4>Resumo do Pedido</h4>
+                <div class="itens-carrinho"></div>
+                <div class="total-pedido">
+                    <span>Total:</span>
+                    <span class="valor-total">R$ 0,00</span>
+                </div>
+            </div>
+
+            <!-- Botão de Finalizar -->
+            <div class="botao-continuar">
+                <button class="finalizar-btn" onclick="finalizarPedido()">
+                    Finalizar Pedido
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Estilos para o autocompletar de endereços -->
+    <style>
+        .address-suggestions {
+            position: absolute;
+            width: 100%;
+            max-height: 200px;
+            overflow-y: auto;
+            background: white;
+            border: 1px solid #ddd;
+            border-top: none;
+            border-radius: 0 0 4px 4px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            z-index: 1000;
+            display: none;
+        }
+
+        .suggestion-item {
+            padding: 10px;
+            cursor: pointer;
+            border-bottom: 1px solid #eee;
+        }
+
+        .suggestion-item:hover {
+            background-color: #f5f5f5;
+        }
+
+        .endereco-entrega {
+            position: relative;
+        }
+    </style>
+
+    <!-- Scripts -->
+    <script src="/js/cardapio.js"></script>
+    <script src="https://maps.googleapis.com/maps/api/js?key=YOUR_API_KEY&libraries=places"></script>
+    <script src="/js/address-autocomplete.js"></script>
+    <script>
+        // Carregar dados do carrinho ao iniciar a página
+        window.onload = function() {
+            const carrinho = JSON.parse(localStorage.getItem('carrinho') || '[]');
+            const itensCarrinho = document.querySelector('.itens-carrinho');
+            const valorTotal = document.querySelector('.valor-total');
+            let total = 0;
+
+            carrinho.forEach(item => {
+                const itemElement = document.createElement('div');
+                itemElement.className = 'item-carrinho';
+                let itemTotal = item.preco * item.quantidade;
+
+                // Adicionar valor dos opcionais selecionados
+                if (item.opcionais && item.opcionais.length > 0) {
+                    item.opcionais.forEach(opcional => {
+                        itemTotal += opcional.preco * item.quantidade;
+                    });
+                }
+
+                itemElement.innerHTML = `
+                    <span>${item.quantidade}x ${item.nome}</span>
+                    <span>R$ ${itemTotal.toFixed(2)}</span>
+                `;
+
+                // Adicionar opcionais selecionados como subitem
+                if (item.opcionais && item.opcionais.length > 0) {
+                    const opcionaisElement = document.createElement('div');
+                    opcionaisElement.className = 'item-opcionais';
+                    opcionaisElement.innerHTML = `<small>+ ${item.opcionais.map(op => op.nome).join(', ')}</small>`;
+                    itemElement.appendChild(opcionaisElement);
+                }
+
+                itensCarrinho.appendChild(itemElement);
+                total += itemTotal;
+            });
+
+
+            valorTotal.textContent = `R$ ${total.toFixed(2)}`;
+        };
+
+        function finalizarPedido() {
+            const tipoEntrega = document.querySelector('input[name="tipo-entrega"]:checked').value;
+            const endereco = document.querySelector('.endereco-entrega textarea').value;
+            
+            if (tipoEntrega === 'entrega' && !endereco.trim()) {
+                alert('Por favor, informe o endereço de entrega');
+                return;
+            }
+
+            const pedido = {
+                itens: JSON.parse(localStorage.getItem('carrinho') || '[]'),
+                tipoEntrega: tipoEntrega,
+                endereco: endereco
+            };
+
+            // Aqui você pode adicionar a lógica para enviar o pedido para o servidor
+            alert('Pedido finalizado com sucesso!');
+            localStorage.removeItem('carrinho'); // Limpa o carrinho
+            window.location.href = '/'; // Redireciona para a página inicial
+        }
+
+        // Mostrar/ocultar campo de endereço quando selecionar delivery
+        document.querySelectorAll('input[name="tipo-entrega"]').forEach(radio => {
+            radio.addEventListener('change', (e) => {
+                const enderecoEntrega = document.querySelector('.endereco-entrega');
+                enderecoEntrega.style.display = e.target.value === 'entrega' ? 'block' : 'none';
+            });
+        });
+    </script>
+</body>
+</html>
